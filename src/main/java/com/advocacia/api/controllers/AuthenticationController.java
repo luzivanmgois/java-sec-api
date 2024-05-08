@@ -17,7 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,7 +90,10 @@ public class AuthenticationController {
     }
 
     @DeleteMapping("/deluser/{id}")
-    public ResponseEntity<Object> deleteUserById(@PathVariable(value = "id") String id){
+    public ResponseEntity<Object> deleteUserById(@PathVariable(value = "id") String id, Authentication auth){
+        if (!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não autorizado!");
+        }
         Optional<User> userId = userService.findById(id);
         if(userId.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
