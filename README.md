@@ -4,7 +4,7 @@
 ![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
 
-Este projeto foi criado com vulnerabilidades para uso em laborátio como back-end e rodar localmente
+Este projeto foi criado com vulnerabilidades para uso em laboratório como back-end e rodar localmente
 
 ## Instalação
 
