@@ -8,7 +8,7 @@ Este projeto foi criado com vulnerabilidades para uso em laboratório como back-
 
 ## Instalação
 
-1. Clone the repository:
+1. Clone o repositório:
 
 ```bash
 git clone https://github.com/luzivangois/java-vuln-api.git
@@ -22,7 +22,7 @@ git clone https://github.com/luzivangois/java-vuln-api.git
 2. A API pode ser acessada em http://localhost:8080
 
 
-## API Endpoints
+## Endpoints da API
 A API prover os seguintes endpoints:
 
 ```markdown
