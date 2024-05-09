@@ -33,7 +33,7 @@ public class ArchiveServiceImpl implements IArchiveService {
     }
 
     @Override
-    public Optional<Archive> findById(Long id) {
+    public Optional<Archive> findById(String id) {
         return archiveRepository.findById(id);
     }
 
@@ -77,7 +77,7 @@ public class ArchiveServiceImpl implements IArchiveService {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         archiveRepository.deleteById(id);
     }
 

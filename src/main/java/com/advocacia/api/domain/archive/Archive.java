@@ -8,9 +8,9 @@ import lombok.Data;
 @Table(name = "archive")
 public class Archive {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "idArchive")
-    private Long id;
+    private String id;
     private String name;
     private String linkArchive;
 }

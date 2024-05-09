@@ -43,7 +43,7 @@ public class ArchiveController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> findById(@PathVariable(value = "id") Long id){
+    public ResponseEntity<Object> findById(@PathVariable(value = "id") String id){
         Optional<Archive> file = archiveService.findById(id);
         return file.<ResponseEntity<Object>>map(value -> ResponseEntity.status(HttpStatus.OK).body(value)).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("Arquivo não encontrado!"));
     }
@@ -55,7 +55,7 @@ public class ArchiveController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteById(@PathVariable(value = "id") Long id){
+    public ResponseEntity<Object> deleteById(@PathVariable(value = "id") String id){
         Optional<Archive> file = archiveService.findById(id);
         if(file.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Arquivo não encontrado!");
