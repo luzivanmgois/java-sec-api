@@ -35,6 +35,7 @@ public class ArchiveController {
         Archive file = archiveService.sendDocument(archive, name);
         if(file != null){
             Map<String, String> response = new HashMap<>();
+            response.put("Id do Arquivo", file.getId());
             response.put("Status", "Sucesso!");
             response.put("Nome do arquivo:", file.getName());
             response.put("Diretório:", file.getLinkArchive());
