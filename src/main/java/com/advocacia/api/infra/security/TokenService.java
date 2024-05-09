@@ -48,7 +48,7 @@ public class TokenService {
             String subject = extractValue(body, "sub=([\\w|-]+)");
             String role = extractValue(body, "role=([\\w|-]+)");
 
-            List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
+            List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(role));
 
             return new UsernamePasswordAuthenticationToken(subject, null, authorities);
         } catch (JWTVerificationException exception){

@@ -8,9 +8,7 @@ import com.advocacia.api.domain.user.UserDTO;
 
 import jakarta.validation.Valid;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +17,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,27 +36,44 @@ public class AuthenticationController {
     private IUserService userService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data){
+        UserDetails userDetails = repository.findByLogin(data.login());
+
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não encontrado");
+        }
+
+        if (!passwordEncoder.matches(data.password(), userDetails.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Senha Incorreta!");
+        }
+
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
         var token = tokenService.generateToken((User) auth.getPrincipal());
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        return ResponseEntity.ok(new LoginResponseDTO(userDetails.getUsername(), userDetails.getAuthorities().toString(), token));
     }
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterDTO data){
-        if(this.repository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
+        if(this.repository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().body("Login Indisponível");
 
         String encryptedPassword = passwordEncoder.encode(data.password());
         User newUser = new User(data.name(), data.login(), encryptedPassword, data.role());
 
         this.repository.save(newUser);
 
-        return ResponseEntity.ok().build();
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", newUser.getId());
+        response.put("login", newUser.getLogin());
+        response.put("Role", newUser.getRole());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/updatepass")
@@ -91,7 +107,7 @@ public class AuthenticationController {
 
     @DeleteMapping("/deluser/{id}")
     public ResponseEntity<Object> deleteUserById(@PathVariable(value = "id") String id, Authentication auth){
-        if (!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))){
+        if (!auth.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não autorizado!");
         }
         Optional<User> userId = userService.findById(id);

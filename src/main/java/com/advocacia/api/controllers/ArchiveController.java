@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -32,7 +34,11 @@ public class ArchiveController {
 
         Archive file = archiveService.sendDocument(archive, name);
         if(file != null){
-            return ResponseEntity.status(HttpStatus.CREATED).body("Arquivo salvo com Sucesso!");
+            Map<String, String> response = new HashMap<>();
+            response.put("Status", "Sucesso!");
+            response.put("Nome do arquivo:", file.getName());
+            response.put("Diretório:", file.getLinkArchive());
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Extensão Inválida!");
     }
