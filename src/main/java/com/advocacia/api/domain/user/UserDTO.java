@@ -8,15 +8,15 @@ import lombok.Setter;
 public class UserDTO {
 
     private String id;
-    private String nome;
+    private String name;
     private String login;
     private UserRole role;
     private String password;
     private String token;
 
-    public UserDTO(String id, String nome, String login, UserRole role, String password, String token) {
+    public UserDTO(String id, String name, String login, UserRole role, String password, String token) {
         this.id = id;
-        this.nome = nome;
+        this.name = name;
         this.login = login;
         this.role = role;
         this.password = password;
@@ -25,7 +25,7 @@ public class UserDTO {
 
     public UserDTO(String id, String name, String login, UserRole role) {
         this.id = id;
-        this.nome = name;
+        this.name = name;
         this.login = login;
         this.role = role;
     }
