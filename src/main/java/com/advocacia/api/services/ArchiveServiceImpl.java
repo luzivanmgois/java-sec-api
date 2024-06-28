@@ -98,7 +98,7 @@ public class ArchiveServiceImpl implements IArchiveService {
             Process proc = rt.exec(command);
             int result = proc.waitFor();
             if(result != 0){
-                System.out.println("process error");
+                throw new IOException("Processo encontrou um erro: " + result);
             }
             InputStream in = (result == 0) ? proc.getInputStream():proc.getErrorStream();
             int c;
@@ -110,7 +110,6 @@ public class ArchiveServiceImpl implements IArchiveService {
         }catch(Exception e){
             return e.toString();
         }
-
     }
 
     @Override

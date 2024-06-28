@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -58,6 +59,9 @@ public class ArchiveController {
     @GetMapping("/name")
     public ResponseEntity<Object> readDoc(@RequestParam(name = "name") String name){
         String response = archiveService.readArchive(name);
+        if (response.startsWith("java.io.IOException")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
