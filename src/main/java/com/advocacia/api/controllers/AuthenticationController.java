@@ -76,15 +76,19 @@ public class AuthenticationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping("/updatepass")
-    public ResponseEntity<Object> updatePassword(@RequestBody @Valid User updatedUser){
-        User existingUser = (User) userService.findByLogin(updatedUser.getLogin());
-        if (existingUser != null && existingUser.isEnabled()) {
-            existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-            userService.save(existingUser);
-            return ResponseEntity.ok(existingUser);
+    @PutMapping("/updatepass/{id}")
+    public ResponseEntity<Object> updatePassword(@PathVariable(value = "id") String id, @RequestBody String newPass, Authentication auth){
+        Optional<User> existingUser = userService.findById(id);
+        if (existingUser.isPresent()) {
+            if (auth.getPrincipal().equals(existingUser.get().getLogin())) {
+                existingUser.get().setPassword(passwordEncoder.encode(newPass));
+                userRepository.save(existingUser.get());
+                return ResponseEntity.status(HttpStatus.OK).body("Senha atualizada com sucesso!");
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Não autorizado a atualizar essa conta.");
+            }
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado ou desativado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
         }
     }
 
