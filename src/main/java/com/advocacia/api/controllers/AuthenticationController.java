@@ -44,7 +44,7 @@ public class AuthenticationController {
         UserDetails userDetails = repository.findByLogin(data.login());
 
         if (userDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
         }
 
         if (!passwordEncoder.matches(data.password(), userDetails.getPassword())) {
@@ -83,7 +83,7 @@ public class AuthenticationController {
             if (auth.getPrincipal().equals(existingUser.get().getLogin())) {
                 existingUser.get().setPassword(passwordEncoder.encode(newPass));
                 userRepository.save(existingUser.get());
-                return ResponseEntity.status(HttpStatus.OK).body("Senha atualizada com sucesso!");
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Senha atualizada com sucesso!");
             } else {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Não autorizado a atualizar essa conta.");
             }
